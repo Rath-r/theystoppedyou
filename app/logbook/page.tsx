@@ -1,12 +1,10 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import fs from "fs/promises";
+import path from "path";
 import Link from "next/link";
 
 async function readLogbook() {
-  const response = await fetch("/api/logbook");
-  const data = await response.json();
-  return data.content;
+  const file = path.join(process.cwd(), "LOGBOOK.md");
+  return fs.readFile(file, "utf8");
 }
 
 function renderMarkdownAsNodes(md: string) {
@@ -35,7 +33,7 @@ function renderMarkdownAsNodes(md: string) {
       flushList();
       const level = line.match(/^#{1,6}/)![0].length;
       const text = H[1];
-      const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+      const Tag = `h${level}` as any;
       const hClass =
         level === 1 ? "text-2xl" : level === 2 ? "text-xl" : "text-lg";
       nodes.push(
@@ -81,36 +79,22 @@ function renderMarkdownAsNodes(md: string) {
   return nodes;
 }
 
-export default function LogbookPage() {
-  const [logbookContent, setLogbookContent] = useState<string>("");
-  const [nodes, setNodes] = useState<any[]>([]);
-
-  useEffect(() => {
-    readLogbook().then((content) => {
-      setLogbookContent(content);
-      setNodes(renderMarkdownAsNodes(content));
-    });
-  }, []);
+export default async function Page() {
+  const md = await readLogbook();
+  const nodes = renderMarkdownAsNodes(md);
 
   return (
     <main className="min-h-screen bg-gray-950">
-      <div className="mx-auto max-w-4xl p-6">
-        <header className="space-y-4 mb-8">
-          <div className="flex justify-end border-b border-gray-700 pb-4">
-            <nav>
-              <Link
-                href="/"
-                className="text-xs text-gray-500 hover:text-gray-300"
-              >
-                Domov
-              </Link>
-            </nav>
-          </div>
-
-          <h1 className="text-3xl font-bold text-white">Logbook</h1>
-        </header>
-
-        <article className="space-y-2 text-gray-200">{nodes}</article>
+      <div className="mx-auto max-w-3xl p-6">
+        <div className="flex justify-end mb-4">
+          <Link href="/" className="text-sm text-gray-300 hover:text-white">
+            Domov
+          </Link>
+        </div>
+        <h1 className="text-2xl font-semibold mb-4 text-gray-100">Logbook</h1>
+        <article className="rounded border border-gray-800 bg-gray-900 p-6 shadow-sm">
+          {nodes}
+        </article>
       </div>
     </main>
   );

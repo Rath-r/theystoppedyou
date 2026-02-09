@@ -50,6 +50,14 @@ export default function Home() {
 
   const daysDriving = calculateDaysDriving(currentDriver.startDate);
 
+  const handleToggleDrivers = () => {
+    if (showDrivers) {
+      // Closing drivers view - go back to Cigi
+      setActiveDriver("cigi");
+    }
+    setShowDrivers(!showDrivers);
+  };
+
   return (
     <main className="mx-auto max-w-5xl p-6 space-y-6">
       <header className="space-y-4">
@@ -85,7 +93,7 @@ export default function Home() {
             </nav>
 
             <button
-              onClick={() => setShowDrivers((v) => !v)}
+              onClick={handleToggleDrivers}
               aria-label="Toggle drivers"
               className="ml-2 h-7 w-7 flex items-center justify-center border border-gray-300 rounded text-xs text-gray-700 bg-white"
             >
