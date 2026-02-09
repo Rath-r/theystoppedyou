@@ -1,35 +1,86 @@
 [
   {
     "id": "1",
+    "driverId": "cigi",
     "lat": 49.33141358085247,
     "lng": 19.548343398261697,
     "label": "Tvrdošín - pri lesníckej"
   },
   {
     "id": "2",
+    "driverId": "cigi",
     "lat": 49.329346316174664,
     "lng": 19.54441066305848,
     "label": "Tvrdošín - Medvedzie"
   },
   {
     "id": "3",
+    "driverId": "cigi",
     "lat": 49.3652657796623,
     "lng": 19.61602047459941,
-    "label": "Trstená",
-    "note": "Bežná kontrola"
+    "label": "Trstená"
   },
   {
     "id": "4",
+    "driverId": "cigi",
     "lat": 49.35915052624947,
     "lng": 19.601523631985668,
     "label": "Trstená"
   },
   {
     "id": "5",
-    "occurredAt": "2026-02-01T10:15:00+01:00",
+    "driverId": "cigi",
     "lat": 49.25488578930858,
     "lng": 19.40566816065316,
-    "label": "Horná Lehota",
-    "note": "Bežná kontrola"
+    "label": "Horná Lehota"
+  },
+  {
+    "id": "6",
+    "driverId": "chipo",
+    "lat": 49.35960234614817,
+    "lng": 19.606151579359985,
+    "label": "Trstená - pri zelenine"
+  },
+  {
+    "id": "7",
+    "driverId": "chipo",
+    "lat": 49.36529722872831,
+    "lng": 19.615963588921453,
+    "label": "Trstená"
+  },
+  {
+    "id": "8",
+    "driverId": "chipo",
+    "lat": 49.31034231744115,
+    "lng": 19.51311503491373,
+    "label": "Nižná - Malá Orava"
+  },
+  {
+    "id": "9",
+    "driverId": "chipo",
+    "lat": 49.31034231744115,
+    "lng": 19.51311503491373,
+    "label": "Nižná - Malá Orava"
+  },
+  {
+    "id": "10",
+    "driverId": "ratr",
+    "lat": 49.358988110477185,
+    "lng": 19.60138963326936,
+    "label": "Trstená - pri nemocnici"
+  },
+  {
+    "id": "11",
+    "driverId": "ratr",
+    "lat": 49.35676646307768,
+    "lng": 19.595807745112236,
+    "label": "Trstená"
+  },
+  {
+    "id": "12",
+    "driverId": "ratr",
+    "lat": 49.55452461831087,
+    "lng": 19.755557911776556,
+    "label": "Podvlk, PL"
   }
 ]

@@ -6,6 +6,7 @@ import L from "leaflet";
 
 type Stop = {
   id: string;
+  driverId: string;
   occurredAt?: string;
   lat: number;
   lng: number;

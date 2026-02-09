@@ -100,7 +100,7 @@ export default function LogbookPage() {
             <nav>
               <Link
                 href="/"
-                className="text-sm text-gray-500 hover:text-gray-300"
+                className="text-xs text-gray-500 hover:text-gray-300"
               >
                 Domov
               </Link>
