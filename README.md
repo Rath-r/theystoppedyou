@@ -1,5 +1,4 @@
-Mini webová aplikácia, ktorá zobrazuje, kde všade bol Marek zastavený políciou,
-odkedy začal šoférovať.
+Mini webová aplikácia, ktorá zobrazuje, kde všade bol vodič zastavený políciou, odkedy začal šoférovať.
 
 ## Tech stack
 
