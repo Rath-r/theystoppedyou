@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 
@@ -24,16 +25,30 @@ const DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 export default function StopsMap({ stops }: { stops: Stop[] }) {
-  const center: [number, number] = stops.length
-    ? [stops[0].lat, stops[0].lng]
+  const mapRef = useRef<L.Map | null>(null);
+
+  // Vypočítaj centroid pinov
+  const initialCenter: [number, number] = stops.length
+    ? [
+        stops.reduce((sum, s) => sum + s.lat, 0) / stops.length,
+        stops.reduce((sum, s) => sum + s.lng, 0) / stops.length,
+      ]
     : [48.1486, 17.1077]; // Bratislava default
+
+  useEffect(() => {
+    if (!mapRef.current || stops.length === 0) return;
+
+    const bounds = L.latLngBounds(stops.map((s) => [s.lat, s.lng]));
+    mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+  }, [stops]);
 
   return (
     <div style={{ height: 520, width: "100%" }}>
       <MapContainer
-        center={center}
+        ref={mapRef}
+        center={initialCenter}
         zoom={9}
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: "100%", width: "100%", filter: "grayscale(100%)" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

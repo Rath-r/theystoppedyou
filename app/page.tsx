@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Footer from "@/components/Footer";
 import stops from "@/data/stops.json";
 
 const StopsMap = dynamic(() => import("@/components/StopsMap"), {
@@ -63,6 +64,8 @@ export default function Home() {
             ))}
         </ul>
       </section>
+
+      <Footer />
     </main>
   );
 }
