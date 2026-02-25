@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import drivers from "@/data/drivers.json";
 import stops from "@/data/stops.json";
+import Achievements from "@/components/Achievements";
 
 const StopsMap = dynamic(() => import("@/components/StopsMap"), {
   ssr: false,
@@ -113,6 +114,8 @@ export default function Home() {
       </header>
 
       <StopsMap stops={driverStops} />
+
+      <Achievements stops={driverStops} daysDriving={daysDriving} />
 
       <section className="space-y-2">
         <h2 className="text-xl font-semibold">Zoznam</h2>
