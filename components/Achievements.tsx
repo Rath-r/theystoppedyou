@@ -19,6 +19,8 @@ export type Achievement = {
   description: string;
   unlocked: boolean;
   hidden?: boolean;
+  // optional progress text to display when locked
+  progress?: string;
 };
 
 const diffDays = (a: Date, b: Date) => {
@@ -160,7 +162,38 @@ export default function Achievements({
     },
   ];
 
-  const visibleAchievements = achievements.filter(
+  // compute optional progress strings for each achievement
+  const withProgress = achievements.map((a) => {
+    let progress: string | undefined;
+    switch (a.id) {
+      case "prvy-kontakt":
+        progress = `${Math.min(stops.length, 1)} / 1 zastavenie`;
+        break;
+      case "zname-tvar":
+        progress = `${Math.min(stops.length, 3)} / 3 zastavenia`;
+        break;
+      case "lokalna-legenda":
+        progress = `${Math.min(stops.length, 5)} / 5 zastavení`;
+        break;
+      case "cisty-tyzden":
+        const days =
+          daysSinceLastStop >= 0 ? Math.min(daysSinceLastStop, 7) : 0;
+        progress = `${days} / 7 dní bez zastavenia`;
+        break;
+      case "mestsky-klasik":
+        const maxSame = Math.max(...Object.values(labelCounts), 0);
+        progress = `${maxSame} / 2 rovnaké miesto`;
+        break;
+      case "cestovatel":
+        progress = `${uniqueLabels} / 3 miest`;
+        break;
+      default:
+        progress = undefined;
+    }
+    return { ...a, progress };
+  });
+
+  const visibleAchievements = withProgress.filter(
     (a) => !a.hidden || a.unlocked,
   );
   const nonHiddenCount = achievements.filter((a) => !a.hidden).length;
@@ -186,7 +219,10 @@ export default function Achievements({
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 items-start">
         {visibleAchievements.map((a) => (
-          <div key={a.id} className="flex flex-col items-center gap-2 p-1">
+          <div
+            key={a.id}
+            className="flex flex-col items-center gap-2 p-1 cursor-pointer hover:scale-105 transition-transform"
+          >
             <div
               className={`relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full flex items-center justify-center transition-all ring-0 ${
                 a.unlocked
@@ -209,6 +245,11 @@ export default function Achievements({
                 {a.title}
               </div>
               <div className="text-xs text-gray-500">{a.description}</div>
+              <div
+                className={`text-xs mt-1 ${a.unlocked ? "text-green-600" : "text-gray-400"}`}
+              >
+                {a.unlocked ? "🔓 Odomknuté" : a.progress}
+              </div>
             </div>
           </div>
         ))}
