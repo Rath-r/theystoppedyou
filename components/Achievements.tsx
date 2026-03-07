@@ -203,10 +203,35 @@ export default function Achievements({
 
   const levelName = getLevelName(stops.length);
 
+  // playful police index metric between 0 and 10
+  const computePoliceIndex = (totalStops: number, days: number): number => {
+    // use a simple linear scale: 1 point per stop + ~1 point per year driving
+    // so differences in tenure matter and the index doesn't immediately
+    // clamp for all drivers.
+    const rawScore = totalStops + days / 365;
+    const value = Math.floor(rawScore);
+    return Math.max(0, Math.min(10, value));
+  };
+
+  const policeIndex = computePoliceIndex(stops.length, daysDriving);
+  const policeLabel =
+    policeIndex <= 2
+      ? "Nenápadný typ"
+      : policeIndex <= 5
+        ? "Mierne podozrivý"
+        : policeIndex <= 8
+          ? "Známa tvár"
+          : "Hliadka zbystrila";
+
   return (
     <section className="space-y-3">
       <div className="flex items-baseline justify-between">
-        <h2 className="text-xl font-semibold">Achievements</h2>
+        <div>
+          <h2 className="text-xl font-semibold">Achievements</h2>
+          <div className="text-sm text-gray-600 mt-1">
+            🚓 Policajný index: {policeIndex} / 10 – {policeLabel}
+          </div>
+        </div>
         <div className="text-sm text-gray-600">
           <span className="mr-3">
             🔓 Odomknuté {unlockedNonHidden} / {nonHiddenCount}
