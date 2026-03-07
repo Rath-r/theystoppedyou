@@ -90,5 +90,19 @@
     "lng": 19.61622165458819,
     "label": "Trstená",
     "occurredAt": "2026-02-11T08:30:00+01:00"
+  },
+  {
+    "id": "14",
+    "driverId": "cigi",
+    "lat": 49.31034231744115,
+    "lng": 19.51311503491373,
+    "label": "Nižná - Malá Orava"
+  },
+  {
+    "id": "15",
+    "driverId": "ratr",
+    "lat": 49.31034231744115,
+    "lng": 19.51311503491373,
+    "label": "Nižná - Malá Orava"
   }
 ]

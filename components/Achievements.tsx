@@ -184,26 +184,31 @@ export default function Achievements({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 items-start">
         {visibleAchievements.map((a) => (
-          <div
-            key={a.id}
-            className={`rounded-lg p-3 border transition-colors flex flex-col gap-2 min-h-[84px] ${
-              a.unlocked
-                ? "bg-white border-gray-200"
-                : "bg-gray-50 border-transparent opacity-60 grayscale"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="text-3xl">{a.emoji}</div>
-              <div className="text-sm text-gray-500">
-                {!a.unlocked ? "🔒" : null}
+          <div key={a.id} className="flex flex-col items-center gap-2 p-1">
+            <div
+              className={`relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full flex items-center justify-center transition-all ring-0 ${
+                a.unlocked
+                  ? "bg-white border-2 border-yellow-200 shadow-sm"
+                  : "bg-gray-100 opacity-60 grayscale border border-transparent"
+              }`}
+            >
+              <div className="text-2xl sm:text-3xl md:text-4xl select-none">
+                {a.emoji}
               </div>
+              {!a.unlocked ? (
+                <div className="absolute -bottom-1 -right-1 text-sm">🔒</div>
+              ) : null}
             </div>
 
-            <div>
-              <div className="font-semibold">{a.title}</div>
-              <div className="text-sm text-gray-600">{a.description}</div>
+            <div className="text-center">
+              <div
+                className={`font-semibold ${a.unlocked ? "text-gray-900" : "text-gray-500"}`}
+              >
+                {a.title}
+              </div>
+              <div className="text-xs text-gray-500">{a.description}</div>
             </div>
           </div>
         ))}
