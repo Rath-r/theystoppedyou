@@ -37,6 +37,7 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
     note: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const handleChange = (
@@ -132,28 +133,43 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
           <button
             type="button"
             onClick={() => {
-              if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                  (position) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      lat: String(position.coords.latitude),
-                      lng: String(position.coords.longitude),
-                    }));
-                  },
-                  () => {
-                    setMessage("Nepodarilo sa získať aktuálnu polohu.");
-                  },
-                );
-              } else {
-                setMessage(
-                  "Geolokácia nie je podporovaná v tomto prehliadači.",
-                );
+              setMessage(null);
+              if (!navigator.geolocation) {
+                setMessage("Tvoje zariadenie nepodporuje zisťovanie polohy.");
+                return;
               }
+
+              setIsLocating(true);
+
+              navigator.geolocation.getCurrentPosition(
+                (position) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    lat: String(position.coords.latitude),
+                    lng: String(position.coords.longitude),
+                  }));
+                  setIsLocating(false);
+                },
+                (error) => {
+                  switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                      setMessage("Nepovolila si prístup k polohe.");
+                      break;
+                    case error.POSITION_UNAVAILABLE:
+                      setMessage("Polohu sa nepodarilo získať.");
+                      break;
+                    default:
+                      setMessage("Nepodarilo sa zistiť polohu.");
+                      break;
+                  }
+                  setIsLocating(false);
+                },
+              );
             }}
-            className="text-xs text-sky-300 hover:text-sky-200"
+            disabled={isLocating || isSubmitting}
+            className="text-xs text-sky-300 hover:text-sky-200 disabled:text-gray-500"
           >
-            Použiť aktuálnu polohu
+            {isLocating ? "Zisťujem polohu..." : "📍 Použiť moju polohu"}
           </button>
         </div>
 
