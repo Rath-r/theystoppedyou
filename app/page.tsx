@@ -1,9 +1,4 @@
-import {
-  getDrivers,
-  getStops,
-  type Driver as DriverRow,
-  type Stop as StopRow,
-} from "@/lib/data";
+import { getDrivers, getStops } from "@/lib/data";
 import HomeClient from "./HomeClient";
 
 type Driver = {

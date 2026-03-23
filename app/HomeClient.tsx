@@ -83,12 +83,18 @@ export default function HomeClient({ drivers, stops }: HomeClientProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <nav>
+            <nav className="flex gap-4">
               <Link
                 href="/logbook"
                 className="text-sm text-gray-500 hover:text-gray-800"
               >
                 Logbook
+              </Link>
+              <Link
+                href="/add-stop"
+                className="text-sm text-gray-500 hover:text-gray-800"
+              >
+                Pridať zastavenie
               </Link>
             </nav>
 

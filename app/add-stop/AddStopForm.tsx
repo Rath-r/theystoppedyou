@@ -1,0 +1,212 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+type DriverOption = {
+  slug: string;
+  displayName: string;
+};
+
+type FormData = {
+  driverSlug: string;
+  label: string;
+  lat: string;
+  lng: string;
+  occurredAt: string;
+  note: string;
+};
+
+type AddStopFormProps = {
+  drivers: DriverOption[];
+};
+
+export default function AddStopForm({ drivers }: AddStopFormProps) {
+  const router = useRouter();
+  const [formData, setFormData] = useState<FormData>({
+    driverSlug: "",
+    label: "",
+    lat: "",
+    lng: "",
+    occurredAt: "",
+    note: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setMessage(null);
+
+    try {
+      const payload = {
+        driverSlug: formData.driverSlug,
+        lat: parseFloat(formData.lat),
+        lng: parseFloat(formData.lng),
+        label: formData.label,
+        ...(formData.occurredAt && { occurredAt: formData.occurredAt }),
+        ...(formData.note && { note: formData.note }),
+      };
+
+      const response = await fetch("/api/stops", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        setMessage("Zastavenie bolo úspešne uložené!");
+        setTimeout(() => router.push("/"), 2000);
+      } else {
+        const errorData = await response.json();
+        setMessage(errorData.error || "Chyba pri ukladaní zastavenia.");
+      }
+    } catch (error) {
+      setMessage("Chyba siete. Skúste to znovu.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 bg-gray-900 p-6 rounded-xl border border-gray-700"
+    >
+      <div>
+        <label
+          htmlFor="driverSlug"
+          className="block text-sm font-medium mb-1 text-gray-200"
+        >
+          Šofér
+        </label>
+        <select
+          id="driverSlug"
+          name="driverSlug"
+          value={formData.driverSlug}
+          onChange={handleChange}
+          required
+          className="w-full bg-gray-800 text-gray-100 border border-gray-600 p-2 rounded"
+        >
+          <option value="">Vyberte šoféra</option>
+          {drivers.map((driver) => (
+            <option key={driver.slug} value={driver.slug}>
+              {driver.displayName}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="label" className="block text-sm font-medium mb-1">
+          Popis zastavenia
+        </label>
+        <input
+          type="text"
+          id="label"
+          name="label"
+          value={formData.label}
+          onChange={handleChange}
+          required
+          className="w-full border p-2 rounded"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label
+            htmlFor="lat"
+            className="block text-sm font-medium mb-1 text-gray-200"
+          >
+            Zemepisná šírka (lat)
+          </label>
+          <input
+            type="number"
+            step="any"
+            id="lat"
+            name="lat"
+            value={formData.lat}
+            onChange={handleChange}
+            required
+            className="w-full bg-gray-800 text-gray-100 border border-gray-600 p-2 rounded"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="lng"
+            className="block text-sm font-medium mb-1 text-gray-200"
+          >
+            Zemepisná dĺžka (lng)
+          </label>
+          <input
+            type="number"
+            step="any"
+            id="lng"
+            name="lng"
+            value={formData.lng}
+            onChange={handleChange}
+            required
+            className="w-full bg-gray-800 text-gray-100 border border-gray-600 p-2 rounded"
+          />
+        </div>
+      </div>
+      <p className="text-xs text-gray-400">
+        Zatiaľ zadaj súradnice ručne. Neskôr sem môžeme pridať výber kliknutím
+        na mapu.
+      </p>
+
+      <div>
+        <label htmlFor="occurredAt" className="block text-sm font-medium mb-1">
+          Dátum a čas (voliteľné)
+        </label>
+        <input
+          type="datetime-local"
+          id="occurredAt"
+          name="occurredAt"
+          value={formData.occurredAt}
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="note" className="block text-sm font-medium mb-1">
+          Poznámka (voliteľné)
+        </label>
+        <textarea
+          id="note"
+          name="note"
+          value={formData.note}
+          onChange={handleChange}
+          rows={3}
+          className="w-full border p-2 rounded"
+        />
+      </div>
+
+      {message && (
+        <div
+          className={`p-3 rounded ${message.includes("úspešne") ? "bg-emerald-900 text-emerald-300" : "bg-rose-900 text-rose-300"}`}
+        >
+          {message}
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-sky-600 hover:bg-sky-500 text-white py-2 px-4 rounded disabled:opacity-50"
+      >
+        {isSubmitting ? "Ukladanie..." : "Uložiť zastavenie"}
+      </button>
+    </form>
+  );
+}
