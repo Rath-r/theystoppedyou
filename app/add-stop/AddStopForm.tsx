@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+
+const MapPicker = dynamic(() => import("./MapPicker"), {
+  ssr: false,
+});
 
 type DriverOption = {
   slug: string;
@@ -117,7 +122,51 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
           value={formData.label}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-full border p-2 rounded bg-gray-800 text-gray-100 border-gray-600"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-sm text-gray-300">Klikni na mapu pre výber polohy</p>
+        <div className="flex gap-2 items-center">
+          <button
+            type="button"
+            onClick={() => {
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      lat: String(position.coords.latitude),
+                      lng: String(position.coords.longitude),
+                    }));
+                  },
+                  () => {
+                    setMessage("Nepodarilo sa získať aktuálnu polohu.");
+                  },
+                );
+              } else {
+                setMessage(
+                  "Geolokácia nie je podporovaná v tomto prehliadači.",
+                );
+              }
+            }}
+            className="text-xs text-sky-300 hover:text-sky-200"
+          >
+            Použiť aktuálnu polohu
+          </button>
+        </div>
+
+        <MapPicker
+          lat={formData.lat ? parseFloat(formData.lat) : null}
+          lng={formData.lng ? parseFloat(formData.lng) : null}
+          onChange={(lat, lng) => {
+            setFormData((prev) => ({
+              ...prev,
+              lat: String(lat),
+              lng: String(lng),
+            }));
+          }}
         />
       </div>
 
