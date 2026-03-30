@@ -16,6 +16,8 @@ export type Stop = {
   lng: number;
   label: string;
   note: string | null;
+  driver_display_name?: string | null;
+  driver_color?: string | null;
 };
 
 export async function getDrivers(): Promise<Driver[]> {
@@ -34,26 +36,30 @@ export async function fetchStops(userId?: number): Promise<Stop[]> {
 
     const sql = `
       SELECT
-        s.id,
-        s.driver_id,
-        s.occurred_at,
-        s.lat,
-        s.lng,
-        s.label,
-        s.note,
-        d.display_name AS driver_display_name
+        s.*, 
+        d.display_name AS driver_display_name,
+        d.color AS driver_color
       FROM stops s
-      JOIN drivers d ON d.id = s.driver_id
+      LEFT JOIN drivers d ON d.id = s.driver_id
       WHERE s.user_id = $1
+      OR s.user_id IN (
+        SELECT following_id FROM follows WHERE follower_id = $1
+      )
       ORDER BY s.occurred_at DESC
     `;
 
     const result = await pool.query(sql, [userId]);
 
-    console.log("Fetched stops for user", userId, "rows:", result.rows.length);
-    console.log("Stop query result:", result.rows);
+    const stops: Stop[] = result.rows.map((row) => ({
+      ...row,
+      driver_color: row.driver_color || "#3b82f6",
+      driver_display_name: row.driver_display_name || "Unknown driver",
+    }));
 
-    return result.rows;
+    console.log("Fetched stops for user", userId, "rows:", stops.length);
+    console.log("Stop query result:", stops);
+
+    return stops;
   } catch (error) {
     console.error("DB Error:", error);
     return [];

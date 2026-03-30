@@ -16,6 +16,8 @@ type Stop = {
   lng: number;
   label: string;
   note?: string;
+  driverDisplayName?: string;
+  driverColor?: string;
 };
 
 export default async function Home() {
@@ -74,6 +76,8 @@ export default async function Home() {
     lng: s.lng,
     label: s.label,
     note: s.note || undefined,
+    driverDisplayName: s.driver_display_name || undefined,
+    driverColor: s.driver_color || "#3b82f6",
   }));
 
   return (

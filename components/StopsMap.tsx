@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import L from "leaflet";
 
 type Stop = {
@@ -12,6 +12,8 @@ type Stop = {
   lng: number;
   label: string;
   note?: string;
+  driverDisplayName?: string;
+  driverColor?: string;
 };
 
 // Fix na chýbajúce ikonky v Next buildoch
@@ -49,27 +51,42 @@ export default function StopsMap({ stops }: { stops: Stop[] }) {
         ref={mapRef}
         center={initialCenter}
         zoom={9}
-        style={{ height: "100%", width: "100%", filter: "grayscale(100%)" }}
+        style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"
         />
-        {stops.map((s) => (
-          <Marker key={s.id} position={[s.lat, s.lng]}>
-            <Popup>
-              <div style={{ fontSize: 14 }}>
-                <div>
-                  <b>{s.label}</b>
+        {stops.map((s) => {
+          const color = s.driverColor || "#3b82f6";
+          return (
+            <CircleMarker
+              key={s.id}
+              center={[s.lat, s.lng]}
+              radius={9}
+              pathOptions={{
+                color,
+                fillColor: color,
+                fillOpacity: 0.8,
+              }}
+            >
+              <Popup>
+                <div style={{ fontSize: 14 }}>
+                  <div>
+                    <strong>{s.driverDisplayName || "Driver"}</strong>
+                  </div>
+                  <div>
+                    <b>{s.label}</b>
+                  </div>
+                  {s.occurredAt && (
+                    <div>{new Date(s.occurredAt).toLocaleString("sk-SK")}</div>
+                  )}
+                  {s.note ? <div style={{ marginTop: 6 }}>{s.note}</div> : null}
                 </div>
-                {s.occurredAt && (
-                  <div>{new Date(s.occurredAt).toLocaleString("sk-SK")}</div>
-                )}
-                {s.note ? <div style={{ marginTop: 6 }}>{s.note}</div> : null}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+              </Popup>
+            </CircleMarker>
+          );
+        })}
       </MapContainer>
     </div>
   );

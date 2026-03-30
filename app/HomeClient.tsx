@@ -96,6 +96,12 @@ export default function HomeClient({ drivers, stops }: HomeClientProps) {
               >
                 Pridať zastavenie
               </Link>
+              <Link
+                href="/settings"
+                className="text-sm text-gray-500 hover:text-gray-800"
+              >
+                Nastavenia profilu
+              </Link>
             </nav>
 
             <button
