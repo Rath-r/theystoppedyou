@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import dynamic from "next/dynamic";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -41,45 +40,20 @@ type HomeClientProps = {
 };
 
 export default function HomeClient({ drivers, stops }: HomeClientProps) {
-  const [activeDriver, setActiveDriver] = useState<string>("cigi");
-  const [showDrivers, setShowDrivers] = useState(false);
-
-  const currentDriver = drivers.find((d) => d.id === activeDriver)!;
+  const activeDriver = drivers[0]?.id || "cigi";
+  const currentDriver =
+    drivers.find((d) => d.id === activeDriver) || drivers[0];
 
   const driverStops = stops.filter((s) => s.driverId === activeDriver);
 
   const daysDriving = calculateDaysDriving(currentDriver.startDate);
-
-  const handleToggleDrivers = () => {
-    if (showDrivers) {
-      // Closing drivers view - go back to Cigi
-      setActiveDriver("cigi");
-    }
-    setShowDrivers(!showDrivers);
-  };
 
   return (
     <main className="mx-auto max-w-5xl p-6 space-y-6">
       <header className="space-y-4">
         <div className="flex items-center justify-between border-b border-gray-200 pb-4">
           <div className="flex items-center gap-3">
-            {showDrivers ? (
-              drivers.map((driver) => (
-                <button
-                  key={driver.id}
-                  onClick={() => setActiveDriver(driver.id)}
-                  className={`px-2 py-1 text-xs transition-colors ${
-                    activeDriver === driver.id
-                      ? "font-bold text-black"
-                      : "text-gray-500 hover:text-gray-700"
-                  }`}
-                >
-                  {driver.name}
-                </button>
-              ))
-            ) : (
-              <div className="text-xs font-bold">{currentDriver.name}</div>
-            )}
+            <div className="text-xs font-bold">{currentDriver.name}</div>
           </div>
 
           <div className="flex items-center gap-3">
@@ -103,14 +77,6 @@ export default function HomeClient({ drivers, stops }: HomeClientProps) {
                 Nastavenia profilu
               </Link>
             </nav>
-
-            <button
-              onClick={handleToggleDrivers}
-              aria-label="Toggle drivers"
-              className="ml-2 h-7 w-7 flex items-center justify-center border border-gray-300 rounded text-xs text-gray-700 bg-white"
-            >
-              S
-            </button>
           </div>
         </div>
 

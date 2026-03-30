@@ -57,26 +57,38 @@ export default async function Home() {
 
   console.log("Logged in user stops:", stopsRows.length);
 
-  const driverLookup = new Map<number, string>();
-  driversRows.forEach((d) => {
-    driverLookup.set(d.id, d.slug);
-  });
+  const currentDriverRecord = driversRows.find((d) => d.owner_user_id === userId);
 
-  const drivers: Driver[] = driversRows.map((d) => ({
-    id: d.slug,
-    name: d.display_name,
-    startDate: d.start_date || "",
-  }));
+  if (!currentDriverRecord) {
+    return (
+      <main className="mx-auto max-w-5xl p-6 text-center">
+        <h1 className="text-3xl font-bold mb-4">Driver profile needed</h1>
+        <p className="text-gray-500">
+          No driver profile found for your account. Please go to Settings and set your driver profile.
+        </p>
+      </main>
+    );
+  }
 
-  const stops: Stop[] = stopsRows.map((s) => ({
+  const drivers: Driver[] = [
+    {
+      id: currentDriverRecord.slug,
+      name: currentDriverRecord.display_name,
+      startDate: currentDriverRecord.start_date || "",
+    },
+  ];
+
+  const driverStopsRows = stopsRows.filter((s) => s.driver_id === currentDriverRecord.id);
+
+  const stops: Stop[] = driverStopsRows.map((s) => ({
     id: String(s.id),
-    driverId: driverLookup.get(s.driver_id) || "",
+    driverId: currentDriverRecord.slug,
     occurredAt: s.occurred_at || undefined,
     lat: s.lat,
     lng: s.lng,
     label: s.label,
     note: s.note || undefined,
-    driverDisplayName: s.driver_display_name || undefined,
+    driverDisplayName: s.driver_display_name || currentDriverRecord.display_name,
     driverColor: s.driver_color || "#3b82f6",
   }));
 
