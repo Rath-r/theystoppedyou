@@ -15,8 +15,8 @@ export async function POST(req: Request) {
   try {
     const session = await auth();
 
-    if (!session || !session.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session?.user?.id) {
+      return new Response("Unauthorized", { status: 401 });
     }
 
     const body: StopInsertRequest = await req.json();
@@ -44,17 +44,17 @@ export async function POST(req: Request) {
 
     // Insert stop for authorized user
     const insertResult = await pool.query(
-      `INSERT INTO stops (driver_id, user_id, occurred_at, lat, lng, label, note)
+      `INSERT INTO stops (driver_id, lat, lng, label, occurred_at, note, user_id)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
       [
         driverId,
-        session.user.id,
-        body.occurredAt || null,
         lat,
         lng,
         label,
+        body.occurredAt || null,
         body.note || null,
+        session.user.id,
       ],
     );
 

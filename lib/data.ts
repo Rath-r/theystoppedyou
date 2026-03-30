@@ -28,7 +28,19 @@ export async function getDrivers(): Promise<Driver[]> {
   return result.rows;
 }
 
-export async function getStops(): Promise<Stop[]> {
+export async function getStops(userId?: string | number): Promise<Stop[]> {
+  if (userId !== undefined && userId !== null) {
+    const result = await pool.query(
+      `SELECT id, driver_id, occurred_at, lat, lng, label, note
+       FROM stops
+       WHERE user_id = $1
+       ORDER BY id`,
+      [userId],
+    );
+
+    return result.rows;
+  }
+
   const result = await pool.query(`
     SELECT id, driver_id, occurred_at, lat, lng, label, note
     FROM stops

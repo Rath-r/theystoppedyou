@@ -1,9 +1,11 @@
-import { withAuth } from "next-auth/middleware";
+import { auth } from "@/src/auth";
 
-export default withAuth(() => {}, {
-  pages: {
-    signIn: "/login",
-  },
+export default auth((req) => {
+  if (!req.auth?.user?.id) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  return undefined;
 });
 
 export const config = {
