@@ -73,6 +73,11 @@ export default async function Home() {
     );
   }
 
+  const driverLookup = new Map<number, string>();
+  driversRows.forEach((driver) => {
+    driverLookup.set(driver.id, driver.slug);
+  });
+
   const drivers: Driver[] = [
     {
       id: currentDriverRecord.slug,
@@ -81,21 +86,16 @@ export default async function Home() {
     },
   ];
 
-  const driverStopsRows = stopsRows.filter(
-    (s) => s.driver_id === currentDriverRecord.id,
-  );
-
-  const stops: Stop[] = driverStopsRows.map((s) => ({
+  const stops: Stop[] = stopsRows.map((s) => ({
     id: String(s.id),
-    driverId: currentDriverRecord.slug,
+    driverId: driverLookup.get(s.driver_id) || currentDriverRecord.slug,
     occurredAt: s.occurred_at || undefined,
     lat: s.lat,
     lng: s.lng,
     label: s.label,
     note: s.note || undefined,
-    driverDisplayName:
-      s.driver_display_name || currentDriverRecord.display_name,
-    driverColor: s.driver_color || "#3b82f6",
+    driverDisplayName: s.driverName || currentDriverRecord.display_name,
+    driverColor: s.driverColor || "#3b82f6",
   }));
 
   return (

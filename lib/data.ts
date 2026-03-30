@@ -16,8 +16,8 @@ export type Stop = {
   lng: number;
   label: string;
   note: string | null;
-  driver_display_name?: string | null;
-  driver_color?: string | null;
+  driverName?: string | null;
+  driverColor?: string | null;
 };
 
 export async function getDrivers(): Promise<Driver[]> {
@@ -37,10 +37,10 @@ export async function fetchStops(userId?: number): Promise<Stop[]> {
     const sql = `
       SELECT
         s.*, 
-        d.display_name AS driver_display_name,
-        d.color AS driver_color
+        d.color AS "driverColor",
+        d.display_name AS "driverName"
       FROM stops s
-      LEFT JOIN drivers d ON d.id = s.driver_id
+      JOIN drivers d ON s.driver_id = d.id
       WHERE s.user_id = $1
       OR s.user_id IN (
         SELECT following_id FROM follows WHERE follower_id = $1
@@ -52,12 +52,9 @@ export async function fetchStops(userId?: number): Promise<Stop[]> {
 
     const stops: Stop[] = result.rows.map((row) => ({
       ...row,
-      driver_color: row.driver_color || "#3b82f6",
-      driver_display_name: row.driver_display_name || "Unknown driver",
+      driverColor: row.driverColor || "#3b82f6",
+      driverName: row.driverName || "Unknown driver",
     }));
-
-    console.log("Fetched stops for user", userId, "rows:", stops.length);
-    console.log("Stop query result:", stops);
 
     return stops;
   } catch (error) {

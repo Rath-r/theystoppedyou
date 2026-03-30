@@ -58,30 +58,23 @@ export default function StopsMap({ stops }: { stops: Stop[] }) {
           attribution="&copy; OpenStreetMap contributors"
         />
         {stops.map((s) => {
-          const color = s.driverColor || "#3b82f6";
+          const markerColor = s.driverColor || "#3b82f6";
+          const driverName = s.driverDisplayName || "Driver";
           return (
             <CircleMarker
               key={s.id}
               center={[s.lat, s.lng]}
-              radius={9}
+              radius={8}
               pathOptions={{
-                color,
-                fillColor: color,
+                color: "#ffffff",
+                fillColor: markerColor,
+                weight: 2,
                 fillOpacity: 0.8,
               }}
             >
               <Popup>
                 <div style={{ fontSize: 14 }}>
-                  <div>
-                    <strong>{s.driverDisplayName || "Driver"}</strong>
-                  </div>
-                  <div>
-                    <b>{s.label}</b>
-                  </div>
-                  {s.occurredAt && (
-                    <div>{new Date(s.occurredAt).toLocaleString("sk-SK")}</div>
-                  )}
-                  {s.note ? <div style={{ marginTop: 6 }}>{s.note}</div> : null}
+                  {driverName} - <strong>{s.label}</strong>
                 </div>
               </Popup>
             </CircleMarker>

@@ -57,7 +57,7 @@ export default function HomeClient({ drivers, stops }: HomeClientProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <nav className="flex gap-4 items-center">
+            <nav className="flex gap-4">
               <Link
                 href="/logbook"
                 className="text-sm text-gray-500 hover:text-gray-800"
@@ -76,55 +76,21 @@ export default function HomeClient({ drivers, stops }: HomeClientProps) {
               >
                 Nastavenia profilu
               </Link>
-              <form action="/api/auth/signout" method="post" className="inline">
-                <button
-                  type="submit"
-                  className="text-sm text-gray-500 hover:text-gray-800"
-                >
-                  Sign out
-                </button>
-              </form>
             </nav>
           </div>
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold">
-            {currentDriver.name} šoféruje už {daysDriving} dní
-          </h1>
+          <h1 className="text-3xl font-bold">Šoféruješ už {daysDriving} dní</h1>
           <p className="text-lg">
-            Zastavili ho <b>{driverStops.length}×</b> – tu všade 👮
+            Zastavili ťa <b>{driverStops.length}×</b> – tu všade 👮
           </p>
         </div>
       </header>
 
-      <StopsMap stops={driverStops} />
+      <StopsMap stops={stops} />
 
       <Achievements stops={driverStops} daysDriving={daysDriving} />
-
-      <section className="space-y-2">
-        <h2 className="text-xl font-semibold">Zoznam</h2>
-        <ul className="space-y-2">
-          {driverStops
-            .slice()
-            .sort((a, b) => {
-              const dateA = a.occurredAt ? new Date(a.occurredAt).getTime() : 0;
-              const dateB = b.occurredAt ? new Date(b.occurredAt).getTime() : 0;
-              return dateB - dateA;
-            })
-            .map((s) => (
-              <li key={s.id} className="rounded-xl border p-3">
-                <div className="font-semibold">{s.label}</div>
-                {s.occurredAt && (
-                  <div className="text-sm opacity-80">
-                    {new Date(s.occurredAt).toLocaleString("sk-SK")}
-                  </div>
-                )}
-                {s.note ? <div className="mt-1">{s.note}</div> : null}
-              </li>
-            ))}
-        </ul>
-      </section>
 
       <Footer />
     </main>
