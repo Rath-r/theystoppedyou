@@ -8,7 +8,7 @@ import Link from "next/link";
 
 async function getDriverByUser(userId: number) {
   const result = await pool.query(
-    "SELECT id, display_name, color FROM drivers WHERE user_id = $1 LIMIT 1",
+    "SELECT id, display_name, color, start_date FROM drivers WHERE user_id = $1 LIMIT 1",
     [userId],
   );
 
@@ -19,10 +19,11 @@ async function createDriver(
   userId: number,
   displayName: string,
   color: string,
+  startDate: string,
 ) {
   const result = await pool.query(
-    "INSERT INTO drivers (user_id, display_name, color) VALUES ($1, $2, $3) RETURNING id, display_name, color",
-    [userId, displayName, color],
+    "INSERT INTO drivers (user_id, display_name, color, start_date) VALUES ($1, $2, $3, $4) RETURNING id, display_name, color, start_date",
+    [userId, displayName, color, startDate],
   );
 
   return result.rows[0];
@@ -32,10 +33,11 @@ async function updateDriver(
   userId: number,
   displayName: string,
   color: string,
+  startDate: string,
 ) {
   const result = await pool.query(
-    "UPDATE drivers SET display_name = $1, color = $2 WHERE user_id = $3 RETURNING id, display_name, color",
-    [displayName, color, userId],
+    "UPDATE drivers SET display_name = $1, color = $2, start_date = $3 WHERE user_id = $4 RETURNING id, display_name, color, start_date",
+    [displayName, color, startDate, userId],
   );
 
   return result.rows[0];
@@ -53,17 +55,21 @@ export async function updateSettings(formData: FormData) {
   const userId = Number(session.user.id);
   const displayName = formData.get("displayName")?.toString().trim() || "";
   const color = formData.get("color")?.toString() || "#3b82f6";
+  const startDate = formData.get("startDate")?.toString() || "";
 
   if (!displayName) {
-    throw new Error("Display name is required");
+    throw new Error("Meno vodiča je povinné");
+  }
+  if (!startDate) {
+    throw new Error("Dátum získania vodičského preukazu je povinný");
   }
 
   const existingDriver = await getDriverByUser(userId);
 
   if (existingDriver) {
-    await updateDriver(userId, displayName, color);
+    await updateDriver(userId, displayName, color, startDate);
   } else {
-    await createDriver(userId, displayName, color);
+    await createDriver(userId, displayName, color, startDate);
   }
 
   return redirect("/settings");
@@ -94,9 +100,19 @@ export default async function SettingsPage() {
 
   return (
     <main className="mx-auto max-w-3xl p-6">
-      <h1 className="text-3xl font-bold mb-4">Profile Settings</h1>
+      <h1 className="text-3xl font-bold mb-4">Nastavenia profilu</h1>
+      {driver?.start_date ? (
+        <p className="text-sm text-gray-500 mb-4">
+          Dátum vodičského preukazu:{" "}
+          {new Date(driver.start_date).toLocaleDateString("sk-SK")}
+        </p>
+      ) : (
+        <p className="text-sm text-gray-500 mb-4">
+          Dátum vodičského preukazu nie je nastavený.
+        </p>
+      )}
       <p className="text-gray-600 mb-6">
-        {session.user?.name ? `Welcome, ${session.user.name}` : "Welcome"}
+        {session.user?.name ? `Vitaj, ${session.user.name}` : "Vitaj"}
       </p>
 
       <div className="mb-4 flex items-center gap-3">
@@ -118,7 +134,7 @@ export default async function SettingsPage() {
       <form action={updateSettings} className="space-y-4 rounded-lg border p-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Driver Display Name
+            Meno vodiča
           </label>
           <input
             name="displayName"
@@ -131,7 +147,24 @@ export default async function SettingsPage() {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Marker Color
+            Dátum získania vodičského preukazu
+          </label>
+          <input
+            name="startDate"
+            type="date"
+            required
+            defaultValue={
+              driver?.start_date
+                ? driver.start_date.toString().split("T")[0]
+                : ""
+            }
+            className="mt-1 w-full rounded border-gray-300 p-2"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Farba markera
           </label>
           <input
             name="color"
