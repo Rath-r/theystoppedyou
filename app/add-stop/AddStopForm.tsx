@@ -39,8 +39,10 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
+  const [isResolvingAddress, setIsResolvingAddress] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [hasManualLabel, setHasManualLabel] = useState(false);
+  const [labelError, setLabelError] = useState(false);
   const [mapTarget, setMapTarget] = useState<{
     lat: number;
     lng: number;
@@ -61,19 +63,27 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
     let cancelled = false;
 
     async function fetchAddress() {
+      setIsResolvingAddress(true);
+
       try {
         const newLabel = await getAddressFromCoords(lat, lng);
-        if (cancelled || !newLabel) return;
+        if (cancelled) return;
 
-        setFormData((prev) => {
-          if (hasManualLabel && prev.label.trim().length > 0) {
-            return prev;
-          }
-          return { ...prev, label: newLabel };
-        });
+        if (newLabel) {
+          setFormData((prev) => {
+            if (hasManualLabel && prev.label.trim().length > 0) {
+              return prev;
+            }
+            return { ...prev, label: newLabel };
+          });
+        }
       } catch (error) {
         if (!cancelled) {
           setMessage("Nepodarilo sa získať adresu z GPS súradníc.");
+        }
+      } finally {
+        if (!cancelled) {
+          setIsResolvingAddress(false);
         }
       }
     }
@@ -94,6 +104,7 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
 
     if (name === "label") {
       setHasManualLabel(true);
+      setLabelError(value.trim().length === 0);
     }
 
     setFormData({ ...formData, [name]: value });
@@ -105,12 +116,36 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
     setMessage(null);
 
     try {
+      const latVal = parseFloat(formData.lat);
+      const lngVal = parseFloat(formData.lng);
+      const nowDateTime = new Date().toISOString();
+
+      if (!formData.label.trim()) {
+        setLabelError(true);
+        setMessage("Vyplň popis zastavenia.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (
+        !Number.isFinite(latVal) ||
+        !Number.isFinite(lngVal) ||
+        latVal === 0 ||
+        lngVal === 0
+      ) {
+        setMessage(
+          "Musíš zadať platné súradnice (lat, lng). Minimum 0 nie je povolené.",
+        );
+        setIsSubmitting(false);
+        return;
+      }
+
       const payload = {
         driverSlug: formData.driverSlug,
-        lat: parseFloat(formData.lat),
-        lng: parseFloat(formData.lng),
+        lat: latVal,
+        lng: lngVal,
         label: formData.label,
-        ...(formData.occurredAt && { occurredAt: formData.occurredAt }),
+        occurredAt: formData.occurredAt ? formData.occurredAt : nowDateTime,
         ...(formData.note && { note: formData.note }),
       };
 
@@ -122,7 +157,19 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
 
       if (response.ok) {
         setMessage("Zastavenie bolo úspešne uložené!");
-        setTimeout(() => router.push("/"), 2000);
+        setMapTarget({
+          lat: parseFloat(formData.lat),
+          lng: parseFloat(formData.lng),
+        });
+        setFormData((prev) => ({
+          ...prev,
+          label: "",
+          note: "",
+          lat: "",
+          lng: "",
+        }));
+        setHasManualLabel(false);
+        alert("Zastavenie bolo pridané.");
       } else {
         const errorData = await response.json();
         setMessage(errorData.error || "Chyba pri ukladaní zastavenia.");
@@ -173,9 +220,19 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
           name="label"
           value={formData.label}
           onChange={handleChange}
+          placeholder={
+            isResolvingAddress ? "Načítavam adresu..." : "Popis zastavenia"
+          }
           required
-          className="w-full border p-2 rounded bg-gray-800 text-gray-100 border-gray-600"
+          className={`w-full border p-2 rounded bg-gray-800 text-gray-100 ${
+            labelError ? "border-red-500" : "border-gray-600"
+          }`}
         />
+        {labelError && (
+          <p className="text-xs text-red-400 mt-1">
+            Popis zastavenia je povinný.
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -324,10 +381,16 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
 
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={
+          isSubmitting ||
+          !formData.lat ||
+          !formData.lng ||
+          Number(formData.lat) === 0 ||
+          Number(formData.lng) === 0
+        }
         className="w-full bg-sky-600 hover:bg-sky-500 text-white py-2 px-4 rounded disabled:opacity-50"
       >
-        {isSubmitting ? "Ukladanie..." : "Uložiť zastavenie"}
+        {isSubmitting ? "Odosielam..." : "Pridať stopku"}
       </button>
     </form>
   );
