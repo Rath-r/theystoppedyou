@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { getAddressFromCoords } from "@/lib/geocoding";
 
 const MapPicker = dynamic(() => import("./MapPicker"), {
   ssr: false,
@@ -39,13 +40,63 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [hasManualLabel, setHasManualLabel] = useState(false);
+  const [mapTarget, setMapTarget] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+
+  useEffect(() => {
+    const lat = Number(formData.lat);
+    const lng = Number(formData.lng);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      return;
+    }
+
+    if (hasManualLabel && formData.label.trim().length > 0) {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function fetchAddress() {
+      try {
+        const newLabel = await getAddressFromCoords(lat, lng);
+        if (cancelled || !newLabel) return;
+
+        setFormData((prev) => {
+          if (hasManualLabel && prev.label.trim().length > 0) {
+            return prev;
+          }
+          return { ...prev, label: newLabel };
+        });
+      } catch (error) {
+        if (!cancelled) {
+          setMessage("Nepodarilo sa získať adresu z GPS súradníc.");
+        }
+      }
+    }
+
+    fetchAddress();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [formData.lat, formData.lng, formData.label, hasManualLabel]);
 
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "label") {
+      setHasManualLabel(true);
+    }
+
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -143,11 +194,15 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
 
               navigator.geolocation.getCurrentPosition(
                 (position) => {
+                  const newLat = position.coords.latitude;
+                  const newLng = position.coords.longitude;
+
                   setFormData((prev) => ({
                     ...prev,
-                    lat: String(position.coords.latitude),
-                    lng: String(position.coords.longitude),
+                    lat: String(newLat),
+                    lng: String(newLng),
                   }));
+                  setMapTarget({ lat: newLat, lng: newLng });
                   setIsLocating(false);
                 },
                 (error) => {
@@ -182,7 +237,9 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
               lat: String(lat),
               lng: String(lng),
             }));
+            setMapTarget({ lat, lng });
           }}
+          flyTo={mapTarget}
         />
       </div>
 
