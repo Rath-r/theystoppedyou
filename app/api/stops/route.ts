@@ -1,5 +1,6 @@
 import { pool } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { auth } from "@/src/auth";
 
 type StopInsertRequest = {
   driverSlug: string;
@@ -12,6 +13,12 @@ type StopInsertRequest = {
 
 export async function POST(req: Request) {
   try {
+    const session = await auth();
+
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body: StopInsertRequest = await req.json();
 
     // Validate required fields
@@ -35,12 +42,20 @@ export async function POST(req: Request) {
 
     const driverId = driverResult.rows[0].id;
 
-    // Insert stop
+    // Insert stop for authorized user
     const insertResult = await pool.query(
-      `INSERT INTO stops (driver_id, occurred_at, lat, lng, label, note)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO stops (driver_id, user_id, occurred_at, lat, lng, label, note)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING *`,
-      [driverId, body.occurredAt || null, lat, lng, label, body.note || null],
+      [
+        driverId,
+        session.user.id,
+        body.occurredAt || null,
+        lat,
+        lng,
+        label,
+        body.note || null,
+      ],
     );
 
     const insertedStop = insertResult.rows[0];
