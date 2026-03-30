@@ -57,14 +57,17 @@ export default async function Home() {
 
   console.log("Logged in user stops:", stopsRows.length);
 
-  const currentDriverRecord = driversRows.find((d) => d.owner_user_id === userId);
+  const currentDriverRecord = driversRows.find(
+    (d) => d.owner_user_id === userId,
+  );
 
   if (!currentDriverRecord) {
     return (
       <main className="mx-auto max-w-5xl p-6 text-center">
         <h1 className="text-3xl font-bold mb-4">Driver profile needed</h1>
         <p className="text-gray-500">
-          No driver profile found for your account. Please go to Settings and set your driver profile.
+          No driver profile found for your account. Please go to Settings and
+          set your driver profile.
         </p>
       </main>
     );
@@ -78,7 +81,9 @@ export default async function Home() {
     },
   ];
 
-  const driverStopsRows = stopsRows.filter((s) => s.driver_id === currentDriverRecord.id);
+  const driverStopsRows = stopsRows.filter(
+    (s) => s.driver_id === currentDriverRecord.id,
+  );
 
   const stops: Stop[] = driverStopsRows.map((s) => ({
     id: String(s.id),
@@ -88,21 +93,14 @@ export default async function Home() {
     lng: s.lng,
     label: s.label,
     note: s.note || undefined,
-    driverDisplayName: s.driver_display_name || currentDriverRecord.display_name,
+    driverDisplayName:
+      s.driver_display_name || currentDriverRecord.display_name,
     driverColor: s.driver_color || "#3b82f6",
   }));
 
   return (
     <main className="mx-auto max-w-5xl p-6">
-      <div className="mb-4">
-        <h1 className="text-3xl font-bold">
-          Welcome, {session.user?.name || session.user?.email}
-        </h1>
-        <p className="text-gray-400">Your stops are below.</p>
-      </div>
-
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-gray-400">{stops.length} stops loaded.</p>
+      <div className="flex items-center justify-end mb-4">
         <form action="/api/auth/signout" method="post">
           <button
             type="submit"

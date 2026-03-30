@@ -57,7 +57,7 @@ export default function HomeClient({ drivers, stops }: HomeClientProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <nav className="flex gap-4">
+            <nav className="flex gap-4 items-center">
               <Link
                 href="/logbook"
                 className="text-sm text-gray-500 hover:text-gray-800"
@@ -76,6 +76,14 @@ export default function HomeClient({ drivers, stops }: HomeClientProps) {
               >
                 Nastavenia profilu
               </Link>
+              <form action="/api/auth/signout" method="post" className="inline">
+                <button
+                  type="submit"
+                  className="text-sm text-gray-500 hover:text-gray-800"
+                >
+                  Sign out
+                </button>
+              </form>
             </nav>
           </div>
         </div>
