@@ -1,6 +1,7 @@
 import { getDrivers, fetchStops } from "@/lib/data";
 import { auth } from "@/auth";
 import HomeClient from "./HomeClient";
+import SignOutButton from "@/components/SignOutButton";
 
 type Driver = {
   id: string;
@@ -22,28 +23,71 @@ type Stop = {
 
 export default async function Home() {
   const session = await auth();
-
   if (!session) {
     return (
-      <main className="mx-auto max-w-5xl p-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-3">Welcome to TheyStoppedYou</h1>
-          <p className="text-gray-300 mb-6">
-            Please sign in to see your stop history.
+      <main className="min-h-screen bg-slate-900 text-white flex items-center">
+        <div className="mx-auto max-w-4xl px-6 py-24 text-center">
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4">
+            TheyStoppedYou
+          </h1>
+          <p className="text-xl text-slate-300 mb-6 italic">
+            Zase ťa vyblikali? Vitaj v klube.
           </p>
-          <form
-            action="/api/auth/signin"
-            method="post"
-            className="inline-block"
-          >
-            <input type="hidden" name="provider" value="google" />
-            <button
-              type="submit"
-              className="px-5 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500"
-            >
-              Sign in with Google
-            </button>
-          </form>
+
+          <p className="text-slate-400 max-w-2xl mx-auto mb-8">
+            Súkromná sociálna sieť pre teba a tvojich kamošov. Zdieľaj svoje
+            stopky, porovnávaj pokuty a zisti, kto z vás jazdí ako magnet na
+            hliadky.
+          </p>
+
+          <div className="flex items-center justify-center">
+            <form action="/api/auth/signin" method="post">
+              <input type="hidden" name="provider" value="google" />
+              <button
+                type="submit"
+                className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-white text-slate-900 font-semibold shadow hover:brightness-95"
+              >
+                <span className="w-5 h-5 inline-block">
+                  {/* simple placeholder Google 'G' */}
+                  <svg
+                    viewBox="0 0 48 48"
+                    className="w-5 h-5"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M44.5 20H24v8.5h11.9C34.2 33 30 36 24 36c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.4 0 6.4 1.2 8.6 3.2l6-6C33 3.8 28.8 2 24 2 12.3 2 3 11.3 3 23s9.3 21 21 21 21-9.3 21-21c0-1.4-.1-2.7-.5-4z"
+                      fill="#EA4335"
+                    />
+                  </svg>
+                </span>
+                Prihlásiť sa cez Google
+              </button>
+            </form>
+          </div>
+
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
+            <div className="p-4 rounded-lg bg-slate-800/60">
+              <div className="text-2xl mb-2">Súkromná mapa</div>
+              <div className="text-slate-400 text-sm">
+                Tvoje stopky pod kontrolou
+              </div>
+            </div>
+
+            <div className="p-4 rounded-lg bg-slate-800/60">
+              <div className="text-2xl mb-2">Sledovanie kamošov</div>
+              <div className="text-slate-400 text-sm">
+                Instagram-style pre vodičov
+              </div>
+            </div>
+
+            <div className="p-4 rounded-lg bg-slate-800/60">
+              <div className="text-2xl mb-2">Vlastný štýl</div>
+              <div className="text-slate-400 text-sm">
+                Každý vodič má na mape svoju vlastnú farbu
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     );
@@ -101,14 +145,7 @@ export default async function Home() {
   return (
     <main className="mx-auto max-w-5xl p-6">
       <div className="flex items-center justify-end mb-4">
-        <form action="/api/auth/signout" method="post">
-          <button
-            type="submit"
-            className="px-4 py-2 rounded bg-gray-700 text-white hover:bg-gray-600"
-          >
-            Sign out
-          </button>
-        </form>
+        <SignOutButton />
       </div>
 
       <HomeClient drivers={drivers} stops={stops} />
