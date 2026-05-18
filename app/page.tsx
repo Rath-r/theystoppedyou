@@ -88,6 +88,24 @@ export default async function Home() {
               </div>
             </div>
           </div>
+          <footer className="mt-16 pt-8 pb-4 text-sm text-slate-500 transition-colors border-t border-slate-800">
+            <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+              <span className="">
+                Made with ☕ by{" "}
+                <a href="https://www.ratrak.sk" target="_blank">
+                  www.ratrak.sk
+                </a>
+              </span>
+              <a
+                href="https://www.buymeacoffee.com/ratrak"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-slate-400 hover:text-slate-300 underline"
+              >
+                Podpor tento projekt na Buy Me a Coffee
+              </a>
+            </div>
+          </footer>
         </div>
       </main>
     );
