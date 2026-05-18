@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
 import L from "leaflet";
 
 type Stop = {
@@ -12,6 +12,8 @@ type Stop = {
   lng: number;
   label: string;
   note?: string;
+  driverDisplayName?: string;
+  driverColor?: string;
 };
 
 // Fix na chýbajúce ikonky v Next buildoch
@@ -25,7 +27,13 @@ const DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-export default function StopsMap({ stops }: { stops: Stop[] }) {
+export default function StopsMap({
+  stops,
+  highlightedDriver,
+}: {
+  stops: Stop[];
+  highlightedDriver?: string | null;
+}) {
   const mapRef = useRef<L.Map | null>(null);
 
   // Vypočítaj centroid pinov
@@ -49,27 +57,40 @@ export default function StopsMap({ stops }: { stops: Stop[] }) {
         ref={mapRef}
         center={initialCenter}
         zoom={9}
-        style={{ height: "100%", width: "100%", filter: "grayscale(100%)" }}
+        style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; OpenStreetMap contributors"
         />
-        {stops.map((s) => (
-          <Marker key={s.id} position={[s.lat, s.lng]}>
-            <Popup>
-              <div style={{ fontSize: 14 }}>
-                <div>
-                  <b>{s.label}</b>
+        {stops.map((s) => {
+          const markerColor = s.driverColor || "#3b82f6";
+          const driverName = s.driverDisplayName || "Driver";
+          const isHighlighted =
+            !highlightedDriver || highlightedDriver === s.driverId;
+          const opacity = isHighlighted ? 0.8 : 0.18;
+          const stroke = isHighlighted ? 2 : 1;
+          return (
+            <CircleMarker
+              key={s.id}
+              center={[s.lat, s.lng]}
+              radius={8}
+              pathOptions={{
+                color: "#ffffff",
+                fillColor: markerColor,
+                weight: stroke,
+                fillOpacity: opacity,
+                opacity: opacity,
+              }}
+            >
+              <Popup>
+                <div style={{ fontSize: 14 }}>
+                  {driverName} - <strong>{s.label}</strong>
                 </div>
-                {s.occurredAt && (
-                  <div>{new Date(s.occurredAt).toLocaleString("sk-SK")}</div>
-                )}
-                {s.note ? <div style={{ marginTop: 6 }}>{s.note}</div> : null}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+              </Popup>
+            </CircleMarker>
+          );
+        })}
       </MapContainer>
     </div>
   );
