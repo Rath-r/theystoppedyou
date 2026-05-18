@@ -129,25 +129,6 @@ export default function HomeClient({ drivers, stops }: HomeClientProps) {
       {/* Right: Sidebar (desktop) */}
       <aside className="hidden md:flex w-80 h-full bg-slate-900 border-l border-slate-800 p-6 flex-col gap-6 overflow-y-auto">
         <div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-sm font-bold">
-              {currentDriver.name?.charAt(0) || "?"}
-            </div>
-            <div>
-              <div className="text-sm font-semibold">{currentDriver.name}</div>
-              <div className="text-xs text-slate-400">
-                Šoféruješ už {daysDriving} dní
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-3 text-sm text-slate-400">
-            Zastavili ťa{" "}
-            <strong className="text-white">{driverStops.length}×</strong>
-          </div>
-        </div>
-
-        <div>
           <h3 className="text-sm font-semibold mb-2">Magneti — Top 3</h3>
           <div className="space-y-2">
             {leaderboard.map((entry, idx) => (
@@ -197,14 +178,6 @@ export default function HomeClient({ drivers, stops }: HomeClientProps) {
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-sm font-bold">
                   {currentDriver.name?.charAt(0) || "?"}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold">
-                    {currentDriver.name}
-                  </div>
-                  <div className="text-xs text-slate-400">
-                    Šoféruješ už {daysDriving} dní
-                  </div>
                 </div>
               </div>
               <button

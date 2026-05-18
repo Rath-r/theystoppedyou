@@ -152,16 +152,6 @@ export default async function Home() {
 
   return (
     <main className="min-h-full p-6">
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold">
-          Šoféruješ už {daysDriving} dní
-        </h2>
-        <p className="text-sm text-slate-400">
-          Zastavili ťa{" "}
-          <strong className="text-white">{driverStops.length}×</strong>
-        </p>
-      </div>
-
       <div className="h-[65vh] rounded-3xl overflow-hidden shadow-xl shadow-slate-950/40 border border-slate-800">
         <DashboardMap stops={stops} activeDriver={currentDriverRecord.slug} />
       </div>
