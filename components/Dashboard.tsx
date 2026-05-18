@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Achievements from "@/components/Achievements";
@@ -84,9 +84,12 @@ export default function Dashboard({
     }));
   }, [stops, drivers, activeDriver]);
 
+  const initializedRef = useRef(false);
+
   useEffect(() => {
-    if (friends.length > 0 && visibleDrivers.length === 0) {
+    if (friends.length > 0 && !initializedRef.current) {
       setVisibleDrivers(friends.map((f) => f.id));
+      initializedRef.current = true;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [friends]);

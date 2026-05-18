@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 type DashboardVisibilityContextValue = {
   visibleDrivers: string[];
@@ -18,12 +24,14 @@ export function DashboardVisibilityProvider({
   children: React.ReactNode;
 }) {
   const [visibleDrivers, setVisibleDrivers] = useState<string[]>([]);
+  const initializedRef = useRef(false);
 
   useEffect(() => {
-    if (friends.length > 0 && visibleDrivers.length === 0) {
+    if (friends.length > 0 && !initializedRef.current) {
       setVisibleDrivers(friends.map((driver) => driver.id));
+      initializedRef.current = true;
     }
-  }, [friends, visibleDrivers.length]);
+  }, [friends]);
 
   const toggleDriverVisibility = (id: string) => {
     setVisibleDrivers((prev) =>
