@@ -72,7 +72,7 @@ export async function updateSettings(formData: FormData) {
     await createDriver(userId, displayName, color, startDate);
   }
 
-  return redirect("/settings");
+  return redirect("/nastavenia");
 }
 
 export default async function SettingsPage() {
@@ -80,7 +80,7 @@ export default async function SettingsPage() {
 
   if (!session?.user?.id) {
     return (
-      <main className="mx-auto max-w-4xl p-6 text-center">
+      <main className="min-h-full p-6 text-center">
         <h1 className="text-3xl font-bold">Please log in</h1>
         <p className="mt-2 text-gray-500">
           You need to sign in to update your profile settings.
@@ -181,12 +181,6 @@ export default async function SettingsPage() {
           Save Settings
         </button>
       </form>
-
-      <div className="mt-6">
-        <Link href="/" className="text-sm text-indigo-600 hover:underline">
-          Back to Dashboard
-        </Link>
-      </div>
     </main>
   );
 }

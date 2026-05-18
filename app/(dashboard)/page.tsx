@@ -1,8 +1,7 @@
 import { getDrivers, fetchStops } from "@/lib/data";
 import { auth } from "@/auth";
-import HomeClient from "./HomeClient";
-import Dashboard from "@/components/Dashboard";
-import SignOutButton from "@/components/SignOutButton";
+import DashboardMap from "@/components/DashboardMap";
+import Achievements from "@/components/Achievements";
 
 type Driver = {
   id: string;
@@ -20,6 +19,15 @@ type Stop = {
   note?: string;
   driverDisplayName?: string;
   driverColor?: string;
+};
+
+const calculateDaysDriving = (startDate: string) => {
+  return Math.max(
+    1,
+    Math.ceil(
+      (Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24),
+    ),
+  );
 };
 
 export default async function Home() {
@@ -49,7 +57,6 @@ export default async function Home() {
                 className="inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-white text-slate-900 font-semibold shadow hover:brightness-95"
               >
                 <span className="w-5 h-5 inline-block">
-                  {/* simple placeholder Google 'G' */}
                   <svg
                     viewBox="0 0 48 48"
                     className="w-5 h-5"
@@ -93,7 +100,12 @@ export default async function Home() {
             <div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
               <span className="">
                 Made with ☕ by{" "}
-                <a href="https://www.ratrak.sk" target="_blank">
+                <a
+                  href="https://www.ratrak.sk"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
                   www.ratrak.sk
                 </a>
               </span>
@@ -118,19 +130,17 @@ export default async function Home() {
     fetchStops(userId),
   ]);
 
-  console.log("Logged in user stops:", stopsRows.length);
-
   const currentDriverRecord = driversRows.find(
     (d) => d.owner_user_id === userId,
   );
 
   if (!currentDriverRecord) {
     return (
-      <main className="mx-auto max-w-5xl p-6 text-center">
+      <main className="min-h-full p-6 text-center">
         <h1 className="text-3xl font-bold mb-4">Driver profile needed</h1>
-        <p className="text-gray-500">
-          No driver profile found for your account. Please go to Settings and
-          set your driver profile.
+        <p className="text-slate-400">
+          No driver profile found for your account. Please go to Nastavenia
+          profilu and set your driver profile.
         </p>
       </main>
     );
@@ -140,14 +150,6 @@ export default async function Home() {
   driversRows.forEach((driver) => {
     driverLookup.set(driver.id, driver.slug);
   });
-
-  const drivers: Driver[] = [
-    {
-      id: currentDriverRecord.slug,
-      name: currentDriverRecord.display_name,
-      startDate: currentDriverRecord.start_date || "",
-    },
-  ];
 
   const stops: Stop[] = stopsRows.map((s) => ({
     id: String(s.id),
@@ -161,5 +163,32 @@ export default async function Home() {
     driverColor: s.driverColor || "#3b82f6",
   }));
 
-  return <Dashboard drivers={drivers} stops={stops} />;
+  const daysDriving = calculateDaysDriving(
+    currentDriverRecord.start_date || new Date().toISOString(),
+  );
+  const driverStops = stops.filter(
+    (s) => s.driverId === currentDriverRecord.slug,
+  );
+
+  return (
+    <main className="min-h-full p-6">
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold">
+          Šoféruješ už {daysDriving} dní
+        </h2>
+        <p className="text-sm text-slate-400">
+          Zastavili ťa{" "}
+          <strong className="text-white">{driverStops.length}×</strong>
+        </p>
+      </div>
+
+      <div className="h-[65vh] rounded-3xl overflow-hidden shadow-xl shadow-slate-950/40 border border-slate-800">
+        <DashboardMap stops={stops} activeDriver={currentDriverRecord.slug} />
+      </div>
+
+      <div className="mt-6">
+        <Achievements stops={driverStops} daysDriving={daysDriving} />
+      </div>
+    </main>
+  );
 }

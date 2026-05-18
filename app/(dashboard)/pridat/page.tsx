@@ -22,29 +22,16 @@ export default async function AddStopPage() {
   }));
 
   return (
-    <main className="mx-auto max-w-2xl p-6 space-y-6 text-white bg-slate-950 min-h-screen">
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <a href="/" className="text-sm text-sky-300 hover:text-sky-100">
-            ← Späť na hlavnú stránku
-          </a>
-          <a
-            href="/"
-            className="text-xs text-gray-300 px-3 py-1 border border-gray-600 rounded hover:bg-gray-800"
-          >
-            Späť
-          </a>
-        </div>
-
-        <div className="space-y-2">
+    <main className="min-h-full p-6 text-white">
+      <div className="space-y-4">
+        <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold">Zaznamenaj zastavenie</h1>
-          <p className="text-lg text-gray-300">
+          <p className="text-slate-400">
             Pridaj nové miesto, kde došlo ku kontrole.
           </p>
         </div>
+        <AddStopForm drivers={simplifiedDrivers} />
       </div>
-
-      <AddStopForm drivers={simplifiedDrivers} />
     </main>
   );
 }
