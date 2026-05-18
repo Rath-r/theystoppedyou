@@ -69,52 +69,53 @@ export default function Achievements({
         <div className="flex items-baseline justify-between">
           <div>
             <h2 className="text-xl font-semibold">Achievements</h2>
-            <div className="text-sm text-gray-600 mt-1">
+            <div className="text-sm text-slate-400 mt-1">
               🚓 Policajný index: {policeIndex} / 10 – {policeLabel}
             </div>
           </div>
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-slate-400">
             Odomknuté {unlockedCount} / {totalCount}
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-gray-700">
+        <div className="flex items-center gap-2 text-xs text-slate-400">
           <span className="font-medium">Policajný forecast:</span>
-          <span className="rounded-full bg-gray-100 px-3 py-1">
+          <span className="rounded-full bg-slate-800 px-3 py-1 text-slate-200">
             {policeForecast}
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-4 items-start">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 items-start">
         {achievementStatuses.map(({ definition, unlocked }) => (
           <div
             key={definition.id}
-            className="flex flex-col items-center gap-2 p-1 cursor-pointer hover:scale-105 transition-transform"
+            className={`flex flex-col items-center text-center p-4 rounded-xl backdrop-blur-sm border ${unlocked ? "bg-slate-900/60 border-slate-800" : "bg-slate-900/40 border-slate-800/30 opacity-40"}`}
           >
-            <div
-              className={`relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all ring-0 ${
-                unlocked
-                  ? "bg-white border-2 border-yellow-200 shadow-sm"
-                  : "bg-gray-100 opacity-60 grayscale border border-transparent"
-              }`}
-            >
-              <definition.icon className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-900" />
-              {!unlocked ? (
-                <div className="absolute -bottom-1 -right-1 text-xs">🔒</div>
-              ) : null}
+            <div className="mb-2">
+              <div
+                className={`w-12 h-12 rounded-full flex items-center justify-center ${unlocked ? "bg-white" : "bg-slate-700"}`}
+              >
+                <definition.icon
+                  className={`h-6 w-6 ${unlocked ? "text-gray-900" : "text-slate-300"}`}
+                />
+              </div>
             </div>
 
-            <div className="text-center">
+            <div className="w-full">
               <div
-                className={`font-semibold text-xs ${unlocked ? "text-gray-900" : "text-gray-500"}`}
+                className={`font-semibold text-sm mb-1 ${unlocked ? "text-slate-100" : "text-slate-400"}`}
               >
                 {definition.title}
               </div>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-slate-400">
                 {definition.description}
               </div>
             </div>
+
+            {!unlocked && (
+              <div className="mt-3 text-xs text-slate-500">🔒 Locked</div>
+            )}
           </div>
         ))}
       </div>

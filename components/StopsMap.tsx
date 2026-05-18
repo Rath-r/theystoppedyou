@@ -27,7 +27,13 @@ const DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-export default function StopsMap({ stops }: { stops: Stop[] }) {
+export default function StopsMap({
+  stops,
+  highlightedDriver,
+}: {
+  stops: Stop[];
+  highlightedDriver?: string | null;
+}) {
   const mapRef = useRef<L.Map | null>(null);
 
   // Vypočítaj centroid pinov
@@ -60,6 +66,10 @@ export default function StopsMap({ stops }: { stops: Stop[] }) {
         {stops.map((s) => {
           const markerColor = s.driverColor || "#3b82f6";
           const driverName = s.driverDisplayName || "Driver";
+          const isHighlighted =
+            !highlightedDriver || highlightedDriver === s.driverId;
+          const opacity = isHighlighted ? 0.8 : 0.18;
+          const stroke = isHighlighted ? 2 : 1;
           return (
             <CircleMarker
               key={s.id}
@@ -68,8 +78,9 @@ export default function StopsMap({ stops }: { stops: Stop[] }) {
               pathOptions={{
                 color: "#ffffff",
                 fillColor: markerColor,
-                weight: 2,
-                fillOpacity: 0.8,
+                weight: stroke,
+                fillOpacity: opacity,
+                opacity: opacity,
               }}
             >
               <Popup>

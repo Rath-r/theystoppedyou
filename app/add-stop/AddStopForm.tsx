@@ -169,7 +169,8 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
           lng: "",
         }));
         setHasManualLabel(false);
-        alert("Zastavenie bolo pridané.");
+        // Redirect back to dashboard
+        router.push("/");
       } else {
         const errorData = await response.json();
         setMessage(errorData.error || "Chyba pri ukladaní zastavenia.");

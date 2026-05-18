@@ -1,6 +1,7 @@
 import { getDrivers, fetchStops } from "@/lib/data";
 import { auth } from "@/auth";
 import HomeClient from "./HomeClient";
+import Dashboard from "@/components/Dashboard";
 import SignOutButton from "@/components/SignOutButton";
 
 type Driver = {
@@ -160,13 +161,5 @@ export default async function Home() {
     driverColor: s.driverColor || "#3b82f6",
   }));
 
-  return (
-    <main className="mx-auto max-w-5xl p-6">
-      <div className="flex items-center justify-end mb-4">
-        <SignOutButton />
-      </div>
-
-      <HomeClient drivers={drivers} stops={stops} />
-    </main>
-  );
+  return <Dashboard drivers={drivers} stops={stops} />;
 }
