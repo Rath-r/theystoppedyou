@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   useDashboardVisibility,
   DashboardVisibilityProvider,
@@ -40,20 +40,23 @@ function SidebarContent({
   driverStops,
   leaderboard,
   friends,
+  closeSidebar,
 }: {
   currentDriver: Driver;
   daysDriving: number;
   driverStops: Stop[];
   leaderboard: Array<{ id: string; name: string; count: number }>;
   friends: Array<{ id: string; name: string; color?: string }>;
+  closeSidebar?: () => void;
 }) {
   const { visibleDrivers, toggleDriverVisibility } = useDashboardVisibility();
 
   return (
-    <div className="w-80 h-full bg-slate-950 text-white border-l border-slate-900 p-6 flex flex-col justify-between shrink-0">
+    <div className="h-full bg-slate-950 text-white flex flex-col justify-between">
       <div className="flex flex-col gap-8">
         <Link
           href="/"
+          onClick={() => closeSidebar?.()}
           className="group block rounded-3xl p-3 transition hover:bg-slate-900/80 cursor-pointer"
         >
           <div className="flex items-center gap-3">
@@ -131,7 +134,10 @@ function SidebarContent({
                   <input
                     type="checkbox"
                     checked={checked}
-                    onChange={() => toggleDriverVisibility(f.id)}
+                    onChange={() => {
+                      toggleDriverVisibility(f.id);
+                      closeSidebar?.();
+                    }}
                     className="accent-blue-500 w-4 h-4"
                   />
                   <span
@@ -149,12 +155,14 @@ function SidebarContent({
       <div className="flex flex-col gap-4 mt-auto pt-6 border-t border-slate-900">
         <Link
           href="/pridat"
+          onClick={() => closeSidebar?.()}
           className="w-full rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white text-center transition duration-200 shadow-md shadow-blue-500/20 hover:bg-blue-500"
         >
           Pridať zastavenie
         </Link>
         <Link
           href="/nastavenia"
+          onClick={() => closeSidebar?.()}
           className="w-full flex items-center justify-center gap-2 text-sm text-slate-400 hover:text-white py-2 transition duration-200"
         >
           <span>⚙️</span>
@@ -162,6 +170,7 @@ function SidebarContent({
         </Link>
         <Link
           href="/"
+          onClick={() => closeSidebar?.()}
           className="w-full flex items-center justify-center gap-2 text-sm text-slate-400 hover:text-white py-2 transition duration-200"
         >
           <span>🏠</span>
@@ -180,23 +189,51 @@ export default function DashboardShell({
   leaderboard,
   friends,
 }: DashboardShellProps) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <DashboardVisibilityProvider friends={friends}>
-      <div className="flex w-screen h-screen overflow-hidden bg-[#0b0f19] text-white">
-        <div className="flex-1 h-full overflow-y-auto">{children}</div>
-        <SidebarContent
-          currentDriver={currentDriver}
-          daysDriving={Math.max(
-            1,
-            Math.ceil(
-              (Date.now() - new Date(currentDriver.startDate).getTime()) /
-                (1000 * 60 * 60 * 24),
-            ),
-          )}
-          driverStops={driverStops}
-          leaderboard={leaderboard}
-          friends={friends}
-        />
+      <div className="relative flex w-screen h-screen overflow-hidden bg-[#0b0f19] text-white">
+        <div className="flex-1 w-full h-full overflow-y-auto">{children}</div>
+
+        <button
+          type="button"
+          onClick={() => setIsSidebarOpen((prev) => !prev)}
+          className="flex md:hidden absolute top-4 right-4 z-[9998] bg-slate-900/90 border border-slate-800 p-3 rounded-xl text-white shadow-xl cursor-pointer"
+          aria-label="Otvoriť postranné menu"
+        >
+          ☰
+        </button>
+
+        {isSidebarOpen && (
+          <div
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 bg-black/60 z-[9990] block md:hidden"
+          />
+        )}
+
+        <div
+          className={`fixed md:relative top-0 right-0 h-full w-[300px] sm:w-[360px] bg-[#0b0f19] border-l border-slate-900 flex flex-col justify-between p-6 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl ${
+            isSidebarOpen
+              ? "translate-x-0"
+              : "translate-x-full md:translate-x-0"
+          } z-[9999]`}
+        >
+          <SidebarContent
+            currentDriver={currentDriver}
+            daysDriving={Math.max(
+              1,
+              Math.ceil(
+                (Date.now() - new Date(currentDriver.startDate).getTime()) /
+                  (1000 * 60 * 60 * 24),
+              ),
+            )}
+            driverStops={driverStops}
+            leaderboard={leaderboard}
+            friends={friends}
+            closeSidebar={() => setIsSidebarOpen(false)}
+          />
+        </div>
       </div>
     </DashboardVisibilityProvider>
   );
