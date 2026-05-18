@@ -185,12 +185,12 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 bg-gray-900 p-6 rounded-xl border border-gray-700"
+      className="space-y-6 rounded-[32px] border border-slate-800 bg-slate-950/95 p-6 shadow-xl shadow-slate-950/40"
     >
       <div>
         <label
           htmlFor="driverSlug"
-          className="block text-sm font-medium mb-1 text-gray-200"
+          className="block text-sm font-medium mb-2 text-slate-300"
         >
           Šofér
         </label>
@@ -200,7 +200,7 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
           value={formData.driverSlug}
           onChange={handleChange}
           required
-          className="w-full bg-gray-800 text-gray-100 border border-gray-600 p-2 rounded"
+          className="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-white placeholder-slate-500 focus:border-transparent focus:ring-2 focus:ring-blue-600 outline-none transition"
         >
           <option value="">Vyberte šoféra</option>
           {drivers.map((driver) => (
@@ -212,7 +212,10 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
       </div>
 
       <div>
-        <label htmlFor="label" className="block text-sm font-medium mb-1">
+        <label
+          htmlFor="label"
+          className="block text-sm font-medium mb-2 text-slate-300"
+        >
           Popis zastavenia
         </label>
         <input
@@ -225,8 +228,8 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
             isResolvingAddress ? "Načítavam adresu..." : "Popis zastavenia"
           }
           required
-          className={`w-full border p-2 rounded bg-gray-800 text-gray-100 ${
-            labelError ? "border-red-500" : "border-gray-600"
+          className={`w-full rounded-xl bg-slate-900 px-4 py-3 text-white placeholder-slate-500 focus:border-transparent focus:ring-2 focus:ring-blue-600 outline-none transition ${
+            labelError ? "border-red-500" : "border border-slate-800"
           }`}
         />
         {labelError && (
@@ -237,7 +240,9 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
       </div>
 
       <div className="space-y-2">
-        <p className="text-sm text-gray-300">Klikni na mapu pre výber polohy</p>
+        <p className="text-sm text-slate-400">
+          Klikni na mapu pre výber polohy
+        </p>
         <div className="flex gap-2 items-center">
           <button
             type="button"
@@ -280,7 +285,7 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
               );
             }}
             disabled={isLocating || isSubmitting}
-            className="text-xs text-sky-300 hover:text-sky-200 disabled:text-gray-500"
+            className="text-xs text-slate-300 hover:text-slate-100 disabled:text-slate-600"
           >
             {isLocating ? "Zisťujem polohu..." : "📍 Použiť moju polohu"}
           </button>
@@ -301,11 +306,11 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <label
             htmlFor="lat"
-            className="block text-sm font-medium mb-1 text-gray-200"
+            className="block text-sm font-medium mb-2 text-slate-300"
           >
             Zemepisná šírka (lat)
           </label>
@@ -317,13 +322,13 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
             value={formData.lat}
             onChange={handleChange}
             required
-            className="w-full bg-gray-800 text-gray-100 border border-gray-600 p-2 rounded"
+            className="w-full rounded-xl bg-slate-900 px-4 py-3 text-white border border-slate-800 placeholder-slate-500 focus:border-transparent focus:ring-2 focus:ring-blue-600 outline-none transition"
           />
         </div>
         <div>
           <label
             htmlFor="lng"
-            className="block text-sm font-medium mb-1 text-gray-200"
+            className="block text-sm font-medium mb-2 text-slate-300"
           >
             Zemepisná dĺžka (lng)
           </label>
@@ -335,7 +340,7 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
             value={formData.lng}
             onChange={handleChange}
             required
-            className="w-full bg-gray-800 text-gray-100 border border-gray-600 p-2 rounded"
+            className="w-full rounded-xl bg-slate-900 px-4 py-3 text-white border border-slate-800 placeholder-slate-500 focus:border-transparent focus:ring-2 focus:ring-blue-600 outline-none transition"
           />
         </div>
       </div>
@@ -345,7 +350,10 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
       </p>
 
       <div>
-        <label htmlFor="occurredAt" className="block text-sm font-medium mb-1">
+        <label
+          htmlFor="occurredAt"
+          className="block text-sm font-medium mb-2 text-slate-300"
+        >
           Dátum a čas (voliteľné)
         </label>
         <input
@@ -354,12 +362,15 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
           name="occurredAt"
           value={formData.occurredAt}
           onChange={handleChange}
-          className="w-full border p-2 rounded"
+          className="w-full rounded-xl bg-slate-900 px-4 py-3 text-white border border-slate-800 placeholder-slate-500 focus:border-transparent focus:ring-2 focus:ring-blue-600 outline-none transition"
         />
       </div>
 
       <div>
-        <label htmlFor="note" className="block text-sm font-medium mb-1">
+        <label
+          htmlFor="note"
+          className="block text-sm font-medium mb-2 text-slate-300"
+        >
           Poznámka (voliteľné)
         </label>
         <textarea
@@ -368,7 +379,7 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
           value={formData.note}
           onChange={handleChange}
           rows={3}
-          className="w-full border p-2 rounded"
+          className="w-full rounded-xl bg-slate-900 px-4 py-3 text-white border border-slate-800 placeholder-slate-500 focus:border-transparent focus:ring-2 focus:ring-blue-600 outline-none transition"
         />
       </div>
 
@@ -389,7 +400,7 @@ export default function AddStopForm({ drivers }: AddStopFormProps) {
           Number(formData.lat) === 0 ||
           Number(formData.lng) === 0
         }
-        className="w-full bg-sky-600 hover:bg-sky-500 text-white py-2 px-4 rounded disabled:opacity-50"
+        className="w-full rounded-xl bg-blue-600 px-6 py-3 text-base font-bold text-white shadow-lg shadow-blue-500/20 transition duration-200 hover:bg-blue-500 disabled:opacity-50"
       >
         {isSubmitting ? "Odosielam..." : "Pridať stopku"}
       </button>

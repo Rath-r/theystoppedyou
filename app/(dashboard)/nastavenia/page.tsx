@@ -80,17 +80,19 @@ export default async function SettingsPage() {
 
   if (!session?.user?.id) {
     return (
-      <main className="min-h-full p-6 text-center">
-        <h1 className="text-3xl font-bold">Please log in</h1>
-        <p className="mt-2 text-gray-500">
-          You need to sign in to update your profile settings.
-        </p>
-        <Link
-          href="/"
-          className="mt-4 inline-flex px-4 py-2 bg-indigo-600 text-white rounded"
-        >
-          Back to Home
-        </Link>
+      <main className="min-h-full w-full bg-[#0b0f19] text-slate-100 font-sans py-16 px-6">
+        <div className="w-full rounded-3xl border border-slate-800 bg-slate-950/90 p-8 shadow-xl shadow-slate-950/40 text-center">
+          <h1 className="text-3xl font-semibold mb-4">Prihláste sa</h1>
+          <p className="text-slate-400 mb-6">
+            Na úpravu nastavení profilu sa musíte prihlásiť.
+          </p>
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white transition duration-200 hover:bg-blue-500"
+          >
+            Návrat na hlavnú mapu
+          </Link>
+        </div>
       </main>
     );
   }
@@ -99,88 +101,106 @@ export default async function SettingsPage() {
   const driver = await getDriverByUser(userId);
 
   return (
-    <main className="mx-auto max-w-3xl p-6">
-      <h1 className="text-3xl font-bold mb-4">Nastavenia profilu</h1>
-      {driver?.start_date ? (
-        <p className="text-sm text-gray-500 mb-4">
-          Dátum vodičského preukazu:{" "}
-          {new Date(driver.start_date).toLocaleDateString("sk-SK")}
-        </p>
-      ) : (
-        <p className="text-sm text-gray-500 mb-4">
-          Dátum vodičského preukazu nie je nastavený.
-        </p>
-      )}
-      <p className="text-gray-600 mb-6">
-        {session.user?.name ? `Vitaj, ${session.user.name}` : "Vitaj"}
-      </p>
+    <main className="min-h-full w-full bg-[#0b0f19] text-slate-100 font-sans py-10 px-6">
+      <div className="w-full space-y-8">
+        <div className="rounded-[32px] border border-slate-800 bg-slate-950/95 p-8 shadow-xl shadow-slate-950/40">
+          <p className="text-sm uppercase tracking-[0.2em] text-slate-500 mb-3">
+            Nastavenia profilu
+          </p>
+          <h1 className="text-4xl font-semibold text-slate-100">
+            Informácie o vodičovi
+          </h1>
+          <p className="mt-3 text-slate-400 max-w-3xl">
+            Uprav svoje údaje, farbu markera a ďalšie nastavenia. Tento panel je
+            navrhnutý tak, aby využil celú šírku obsahu vľavo od fixného bočného
+            panela.
+          </p>
+        </div>
 
-      <div className="mb-4 flex items-center gap-3">
-        {session.user?.image && (
-          <Image
-            src={session.user.image}
-            alt="User profile"
-            width={48}
-            height={48}
-            className="rounded-full"
-          />
-        )}
-        <div>
-          <div className="font-semibold">{session.user?.name}</div>
-          <div className="text-sm text-gray-500">{session.user?.email}</div>
+        <div className="rounded-[32px] border border-slate-800 bg-slate-950/95 p-8 shadow-xl shadow-slate-950/40">
+          <div className="mb-8 flex flex-col gap-4 rounded-3xl border border-slate-800 bg-slate-900/90 p-6">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p className="text-xl font-semibold text-slate-100">
+                  {session.user?.name}
+                </p>
+                <p className="text-sm text-slate-400">{session.user?.email}</p>
+              </div>
+              {session.user?.image && (
+                <Image
+                  src={session.user.image}
+                  alt="User profile"
+                  width={56}
+                  height={56}
+                  className="rounded-2xl"
+                />
+              )}
+            </div>
+            {driver?.start_date ? (
+              <p className="text-sm text-slate-400">
+                Dátum vodičského preukazu:{" "}
+                {new Date(driver.start_date).toLocaleDateString("sk-SK")}
+              </p>
+            ) : (
+              <p className="text-sm text-slate-400">
+                Dátum vodičského preukazu nie je nastavený.
+              </p>
+            )}
+          </div>
+
+          <form action={updateSettings} className="grid gap-6">
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div>
+                <label className="block text-sm font-medium mb-2 text-slate-400">
+                  Meno vodiča
+                </label>
+                <input
+                  name="displayName"
+                  type="text"
+                  required
+                  defaultValue={driver?.display_name || ""}
+                  className="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-white placeholder-slate-500 focus:border-transparent focus:ring-2 focus:ring-blue-600 outline-none transition"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2 text-slate-400">
+                  Dátum získania vodičského preukazu
+                </label>
+                <input
+                  name="startDate"
+                  type="date"
+                  required
+                  defaultValue={
+                    driver?.start_date
+                      ? driver.start_date.toString().split("T")[0]
+                      : ""
+                  }
+                  className="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-white placeholder-slate-500 focus:border-transparent focus:ring-2 focus:ring-blue-600 outline-none transition"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2 text-slate-400">
+                Farba markera
+              </label>
+              <input
+                name="color"
+                type="color"
+                defaultValue={driver?.color || "#3b82f6"}
+                className="h-12 w-24 rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-white outline-none transition"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full rounded-xl bg-blue-600 px-6 py-3 text-base font-bold text-white shadow-lg shadow-blue-500/20 transition duration-200 hover:bg-blue-500"
+            >
+              Uložiť nastavenia
+            </button>
+          </form>
         </div>
       </div>
-
-      <form action={updateSettings} className="space-y-4 rounded-lg border p-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Meno vodiča
-          </label>
-          <input
-            name="displayName"
-            type="text"
-            required
-            defaultValue={driver?.display_name || ""}
-            className="mt-1 w-full rounded border-gray-300 p-2"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Dátum získania vodičského preukazu
-          </label>
-          <input
-            name="startDate"
-            type="date"
-            required
-            defaultValue={
-              driver?.start_date
-                ? driver.start_date.toString().split("T")[0]
-                : ""
-            }
-            className="mt-1 w-full rounded border-gray-300 p-2"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Farba markera
-          </label>
-          <input
-            name="color"
-            type="color"
-            defaultValue={driver?.color || "#3b82f6"}
-            className="mt-1 h-10 w-20 border border-gray-300 rounded"
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500"
-        >
-          Save Settings
-        </button>
-      </form>
     </main>
   );
 }

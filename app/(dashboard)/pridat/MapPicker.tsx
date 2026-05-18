@@ -43,16 +43,16 @@ function ClickHandler({
 
 export default function MapPicker({ lat, lng, onChange, flyTo }: Props) {
   return (
-    <div className="w-full h-72 rounded-xl overflow-hidden border border-gray-700">
+    <div className="w-full h-[420px] rounded-3xl overflow-hidden border border-slate-800 shadow-xl shadow-slate-950/40">
       <MapContainer
         center={[49.358, 19.613]}
         zoom={13}
         scrollWheelZoom={true}
-        className="w-full h-full"
+        className="w-full h-full bg-slate-950"
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CartoDB</a>'
+          url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
         <ClickHandler onChange={onChange} />
         {flyTo && <ChangeView center={[flyTo.lat, flyTo.lng]} />}
