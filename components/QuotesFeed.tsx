@@ -126,7 +126,6 @@ export default function QuotesFeed() {
     <div className="space-y-4 md:space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-xl font-bold text-white mb-1">Šoferský Rádio</h2>
         <p className="text-sm text-slate-400">
           Zdieľaj svoje skúsenosti z cesty
         </p>

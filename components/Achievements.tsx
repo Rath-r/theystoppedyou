@@ -68,7 +68,6 @@ export default function Achievements({
       <div className="space-y-2">
         <div className="flex items-baseline justify-between">
           <div>
-            <h2 className="text-xl font-semibold">Achievements</h2>
             <div className="text-sm text-slate-400 mt-1">
               🚓 Policajný index: {policeIndex} / 10 – {policeLabel}
             </div>
