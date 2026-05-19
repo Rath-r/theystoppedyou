@@ -213,7 +213,7 @@ export default function DashboardShell({
         )}
 
         <div
-          className={`fixed md:relative top-0 right-0 h-full w-[300px] sm:w-[360px] bg-[#0b0f19] border-l border-slate-900 flex flex-col justify-between p-6 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl ${
+          className={`fixed md:relative top-0 right-0 h-full w-[300px] sm:w-[360px] bg-[#0b0f19] border-l border-slate-900 flex flex-col justify-between p-6 shrink-0 transition-transform duration-300 ease-in-out shadow-2xl overflow-y-auto pb-8 ${
             isSidebarOpen
               ? "translate-x-0"
               : "translate-x-full md:translate-x-0"

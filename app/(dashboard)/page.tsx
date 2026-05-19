@@ -151,7 +151,7 @@ export default async function Home() {
   );
 
   return (
-    <main className="min-h-full p-6">
+    <main className="min-h-full px-3 py-4 md:p-6">
       <div className="h-[65vh] rounded-3xl overflow-hidden shadow-xl shadow-slate-950/40 border border-slate-800">
         <DashboardMap stops={stops} activeDriver={currentDriverRecord.slug} />
       </div>
