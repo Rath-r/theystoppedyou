@@ -2,6 +2,7 @@ import { getDrivers, fetchStops } from "@/lib/data";
 import { auth } from "@/auth";
 import DashboardMap from "@/components/DashboardMap";
 import Achievements from "@/components/Achievements";
+import QuotesFeed from "@/components/QuotesFeed";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 
 type Driver = {
@@ -158,6 +159,10 @@ export default async function Home() {
 
       <div className="mt-6">
         <Achievements stops={driverStops} daysDriving={daysDriving} />
+      </div>
+
+      <div className="mt-8">
+        <QuotesFeed />
       </div>
     </main>
   );
