@@ -1,7 +1,7 @@
 import { getDrivers, fetchStops } from "@/lib/data";
 import { auth } from "@/auth";
 import DashboardMap from "@/components/DashboardMap";
-import Achievements from "@/components/Achievements";
+import DashboardTabs from "@/components/DashboardTabs";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 
 type Driver = {
@@ -156,9 +156,7 @@ export default async function Home() {
         <DashboardMap stops={stops} activeDriver={currentDriverRecord.slug} />
       </div>
 
-      <div className="mt-6">
-        <Achievements stops={driverStops} daysDriving={daysDriving} />
-      </div>
+      <DashboardTabs stops={driverStops} daysDriving={daysDriving} />
     </main>
   );
 }
