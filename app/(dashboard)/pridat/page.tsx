@@ -22,9 +22,9 @@ export default async function AddStopPage() {
   }));
 
   return (
-    <main className="min-h-full flex-1 w-full bg-[#0b0f19] text-slate-100 font-sans py-10 px-6">
-      <div className="w-full space-y-10">
-        <div className="rounded-[32px] border border-slate-800 bg-slate-950/95 p-8 shadow-xl shadow-slate-950/40">
+    <main className="min-h-full flex-1 w-full bg-[#0b0f19] text-slate-100 font-sans py-6 sm:py-10 px-3 sm:px-6">
+      <div className="w-full space-y-6 md:space-y-10">
+        <div className="rounded-[32px] border border-slate-800 bg-slate-950/95 p-4 sm:p-6 md:p-8 shadow-xl shadow-slate-950/40">
           <p className="text-sm uppercase tracking-[0.2em] text-slate-500 mb-3">
             Pridať nové zastavenie
           </p>
@@ -37,7 +37,7 @@ export default async function AddStopPage() {
           </p>
         </div>
 
-        <div className="w-full rounded-[32px] border border-slate-800 bg-slate-950/95 p-6 shadow-xl shadow-slate-950/40">
+        <div className="w-full rounded-[32px] border border-slate-800 bg-slate-950/95 p-3 sm:p-4 md:p-6 shadow-xl shadow-slate-950/40">
           <AddStopForm drivers={simplifiedDrivers} />
         </div>
       </div>

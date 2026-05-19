@@ -80,7 +80,7 @@ export default async function SettingsPage() {
 
   if (!session?.user?.id) {
     return (
-      <main className="min-h-full w-full bg-[#0b0f19] text-slate-100 font-sans py-16 px-6">
+      <main className="min-h-full w-full bg-[#0b0f19] text-slate-100 font-sans py-16 px-3 sm:px-6">
         <div className="w-full rounded-3xl border border-slate-800 bg-slate-950/90 p-8 shadow-xl shadow-slate-950/40 text-center">
           <h1 className="text-3xl font-semibold mb-4">Prihláste sa</h1>
           <p className="text-slate-400 mb-6">
@@ -101,9 +101,9 @@ export default async function SettingsPage() {
   const driver = await getDriverByUser(userId);
 
   return (
-    <main className="min-h-full w-full bg-[#0b0f19] text-slate-100 font-sans py-10 px-6">
-      <div className="w-full space-y-8">
-        <div className="rounded-[32px] border border-slate-800 bg-slate-950/95 p-8 shadow-xl shadow-slate-950/40">
+    <main className="min-h-full w-full bg-[#0b0f19] text-slate-100 font-sans py-6 sm:py-10 px-3 sm:px-6">
+      <div className="w-full space-y-6 md:space-y-8">
+        <div className="rounded-[32px] border border-slate-800 bg-slate-950/95 p-4 sm:p-6 md:p-8 shadow-xl shadow-slate-950/40">
           <p className="text-sm uppercase tracking-[0.2em] text-slate-500 mb-3">
             Nastavenia profilu
           </p>
@@ -117,8 +117,8 @@ export default async function SettingsPage() {
           </p>
         </div>
 
-        <div className="rounded-[32px] border border-slate-800 bg-slate-950/95 p-8 shadow-xl shadow-slate-950/40">
-          <div className="mb-8 flex flex-col gap-4 rounded-3xl border border-slate-800 bg-slate-900/90 p-6">
+        <div className="rounded-[32px] border border-slate-800 bg-slate-950/95 p-4 sm:p-6 md:p-8 shadow-xl shadow-slate-950/40">
+          <div className="mb-8 flex flex-col gap-3 md:gap-4 rounded-3xl border border-slate-800 bg-slate-900/90 p-3 sm:p-4 md:p-6">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <p className="text-xl font-semibold text-slate-100">
@@ -148,8 +148,8 @@ export default async function SettingsPage() {
             )}
           </div>
 
-          <form action={updateSettings} className="grid gap-6">
-            <div className="grid gap-6 lg:grid-cols-2">
+          <form action={updateSettings} className="grid gap-4 md:gap-6">
+            <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
               <div>
                 <label className="block text-sm font-medium mb-2 text-slate-400">
                   Meno vodiča
