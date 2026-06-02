@@ -52,7 +52,7 @@ export default function MapPicker({ lat, lng, onChange, flyTo }: Props) {
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CartoDB</a>'
-          url="https://{s}.basemaps.cartocdn.com/voyager_labels_under/{z}/{x}/{y}{r}.png"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         />
         <ClickHandler onChange={onChange} />
         {flyTo && <ChangeView center={[flyTo.lat, flyTo.lng]} />}
