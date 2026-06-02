@@ -165,7 +165,6 @@ function SidebarContent({
           onClick={() => closeSidebar?.()}
           className="w-full flex items-center justify-center gap-2 text-sm text-slate-400 hover:text-white py-2 transition duration-200"
         >
-          <span>⚙️</span>
           Nastavenia profilu
         </Link>
         <Link
@@ -173,7 +172,6 @@ function SidebarContent({
           onClick={() => closeSidebar?.()}
           className="w-full flex items-center justify-center gap-2 text-sm text-slate-400 hover:text-white py-2 transition duration-200"
         >
-          <span>🏠</span>
           Hlavná mapa
         </Link>
         <SignOutButton className="w-full text-center text-xs text-slate-500 hover:text-red-400 bg-transparent px-0 py-1" />
