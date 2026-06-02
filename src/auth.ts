@@ -52,6 +52,10 @@ export const authOptions = {
 };
 
 const nextAuth = NextAuth(authOptions);
+const nextAuthMiddleware = NextAuth({
+  ...authOptions,
+  adapter: undefined,
+} as any);
 
-export const auth = nextAuth.auth;
+export const auth = nextAuthMiddleware.auth;
 export const { GET, POST } = nextAuth.handlers;
